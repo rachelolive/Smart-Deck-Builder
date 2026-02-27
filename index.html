@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Deck Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+
+        /* Layout Container */
+        .app-container {
+            display: flex;
+            gap: 30px;
+            max-width: 1100px;
+            margin: 20px auto;
+            align-items: flex-start;
+        }
+
+        /* Clean, Elegant Styling */
+        .form-wrapper { 
+            flex: 1;
+            background: #ffffff; 
+            padding: 40px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.06); 
+            min-width: 0; /* Prevents flex blowout */
+        }
+
+        /* Side Panel Styling */
+        .side-panel {
+            flex: 1;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            min-width: 0;
+        }
+
+        .side-panel h3 { margin-bottom: 15px; border-bottom: 2px solid #f1f1f1; padding-bottom: 15px; }
+        
+        /* Selected Slide Cards */
+        .selected-slide {
+            margin-bottom: 25px;
+            background: #fafafa;
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            padding: 15px;
+            animation: fadeIn 0.3s;
+        }
+        .selected-slide h4 { margin: 0 0 10px 0; color: #1a1a1a; font-size: 15px; }
+        .selected-slide img { 
+            width: 100%; 
+            height: auto; 
+            border-radius: 6px; 
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+        }
+        .talk-track {
+            font-size: 13px;
+            color: #444;
+            background: #fff;
+            padding: 10px 12px;
+            border-left: 3px solid #6C2BD9;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .video-link {
+            font-size: 13px;
+            font-weight: 500;
+            color: #6C2BD9;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #f5f0ff;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .video-link:hover { background: #e9deff; }
+        .empty-state { color: #888; font-style: italic; font-size: 14px; text-align: center; margin-top: 40px; }
+
+        /* Step Containers */
+        .step { display: none; animation: fadeIn 0.4s; }
+        .step.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography & Layout */
+        h3 { 
+            margin-top: 0; 
+            margin-bottom: 25px; 
+            color: #1a1a1a; 
+            font-weight: 600; 
+            font-size: 22px; 
+        }
+        .step-indicator {
+            font-size: 13px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .form-group { margin-bottom: 25px; }
+        label.field-label { font-weight: 500; font-size: 14px; margin-bottom: 8px; display: block; color: #444; }
+        
+        /* Inputs & Checkboxes */
+        input[type="text"], input[type="email"] { 
+            width: 100%; 
+            padding: 14px 16px; 
+            box-sizing: border-box; 
+            border: 1px solid #dcdcdc; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            font-family: 'Poppins', sans-serif;
+            transition: border 0.3s;
+        }
+        input[type="text"]:focus, input[type="email"]:focus { border-color: #6C2BD9; outline: none; }
+        
+        .checkbox-group { 
+            display: flex; 
+            align-items: center; 
+            padding: 12px 15px; 
+            margin-bottom: 10px; 
+            font-size: 15px; 
+            cursor: pointer; 
+            border: 1px solid #eee;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .checkbox-group:hover { background: #fafafa; border-color: #ccc; }
+        .checkbox-group input[type="checkbox"] { 
+            transform: scale(1.2); 
+            margin-right: 15px; 
+            cursor: pointer; 
+            accent-color: #6C2BD9;
+        }
+        .checkbox-group label { cursor: pointer; width: 100%; font-weight: 400; }
+        .none-option { border: none; background: #f9f9f9; color: #666; font-style: italic; }
+
+        /* Buttons */
+        .button-group { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-top: 35px; 
+            gap: 15px;
+        }
+        button { 
+            font-family: 'Poppins', sans-serif;
+            padding: 14px 28px; 
+            border: none; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 500; 
+            transition: all 0.2s; 
+        }
+        .btn-next { background-color: #6C2BD9; color: white; flex-grow: 1; }
+        .btn-next:hover { background-color: #5521b0; }
+        .btn-back { background-color: #f1f1f1; color: #555; width: 30%; }
+        .btn-back:hover { background-color: #e2e2e2; }
+        
+        /* Success Action Buttons */
+        .btn-outline { background-color: transparent; color: #6C2BD9; border: 2px solid #6C2BD9; width: 48%; }
+        .btn-outline:hover { background-color: #f5f0ff; }
+        .success-actions { display: flex; justify-content: space-between; gap: 15px; margin-top: 25px; }
+
+        #statusMessage { text-align: center; margin-top: 20px; font-weight: 500; }
+
+        /* Responsive Design */
+        @media (max-width: 850px) {
+            .app-container { flex-direction: column; }
+            .side-panel { position: static; max-height: none; width: 100%; box-sizing: border-box; }
+            .form-wrapper { width: 100%; box-sizing: border-box; padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- LEFT SIDE: FORM -->
+    <div class="form-wrapper">
+      <form id="deckForm">
+        
+        <div class="step active" id="step0">
+          <div class="step-indicator">Step 1 of 6</div>
+          <h3>Client Information</h3>
+          <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Enter the prospect's details to begin assembling their custom deck.</p>
+          
+          <div class="form-group">
+            <label class="field-label">Email Address</label>
+            <input type="email" id="email" placeholder="you@company.com" required>
+          </div>
+          <div class="form-group">
+            <label class="field-label">Company Name</label>
+            <input type="text" id="company" placeholder="e.g. Acme Corp" required>
+          </div>
+          <div class="button-group">
+            <button type="button" class="btn-next" onclick="nextStep(0)">Next: Core Platform &#8594;</button>
+          </div>
+        </div>
+
+        <div class="step" id="step1">
+          <div class="step-indicator">Step 2 of 6</div>
+          <h3>Core Inclusions</h3>
+          
+          <!-- Example formatting: Add data-title, data-img, data-talktrack, and data-video to your options -->
+          <div class="checkbox-group">
+            <input type="checkbox" id="f_about" class="slide-checkbox" value="about signal ai" 
+                   data-title="About Signal AI" 
+                   data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=About+Signal+AI+Slide" 
+                   data-talktrack="Signal AI is fundamentally transforming how organizations make sense of the world's data..." 
+                   data-video="https://youtube.com/watch?v=example">
+            <label for="f_about">About Signal AI</label>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="f_explain" class="slide-checkbox" value="explain our ai"
+                   data-title="Explain our AI" 
+                   data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=AI+Explanation" 
+                   data-talktrack="Our proprietary AI parses over 5 million documents daily, extracting sentiment, salience, and entities..." 
+                   data-video="https://youtube.com/watch?v=example">
+            <label for="f_explain">Explain our AI</label>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="f_strategic" class="slide-checkbox" value="strategic solutions (team introduction)"
+                   data-title="Strategic Solutions" 
+                   data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Team+Intro" 
+                   data-talktrack="Meet the Strategic Solutions team dedicated to ensuring your ongoing success..." 
+                   data-video="">
+            <label for="f_strategic">Strategic Solutions (Team Intro)</label>
+          </div>
+
+          <div class="checkbox-group"><input type="checkbox" id="f_rep" class="slide-checkbox" value="our approach to reputation" data-title="Approach to Reputation" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Reputation" data-talktrack="Here is how we quantify reputation." data-video="https://youtube.com/watch?v=example"><label for="f_rep">Our approach to reputation</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_risk" class="slide-checkbox" value="our approach to risk" data-title="Approach to Risk" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Risk" data-talktrack="Risk is no longer just financial; it's reputational." data-video=""><label for="f_risk">Our approach to risk</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_roadmap" class="slide-checkbox" value="our product roadmap" data-title="Product Roadmap" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Roadmap" data-talktrack="A sneak peek at what is coming in Q3 and Q4." data-video=""><label for="f_roadmap">Our product roadmap</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_predictive" class="slide-checkbox" value="predictive intelligence" data-title="Predictive Intelligence" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Predictive" data-talktrack="Shift from reactive tracking to predictive strategy." data-video=""><label for="f_predictive">Predictive Intelligence</label></div>
+
+          <!-- None Option -->
+          <div class="checkbox-group none-option">
+            <input type="checkbox" id="none_1" class="none-checkbox" value="none">
+            <label for="none_1">None of the above</label>
+          </div>
+          
+          <div class="button-group">
+            <button type="button" class="btn-back" onclick="prevStep(1)">&#8592; Back</button>
+            <button type="button" class="btn-next" onclick="nextStep(1)">Next: Interests &#8594;</button>
+          </div>
+        </div>
+
+        <div class="step" id="step2">
+          <div class="step-indicator">Step 3 of 6</div>
+          <h3>Primary Area of Interest</h3>
+          
+          <div class="checkbox-group"><input type="checkbox" id="f_social" class="slide-checkbox" value="premium social intelligence" data-title="Premium Social Intelligence" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Social" data-talktrack="Integrate social data alongside broadcast and print." data-video=""><label for="f_social">Premium Social Intelligence</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_analytics" class="slide-checkbox" value="advanced analytics & reporting" data-title="Advanced Analytics" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Analytics" data-talktrack="Custom charts that export right to PowerPoint." data-video=""><label for="f_analytics">Advanced Analytics & Reporting</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_newsletters" class="slide-checkbox" value="newsletters" data-title="Newsletters" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Newsletters" data-talktrack="Automate your morning executive briefing." data-video=""><label for="f_newsletters">Newsletters</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_repreports" class="slide-checkbox" value="reputation reports" data-title="Reputation Reports" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Rep+Reports" data-talktrack="Quarterly board-ready reputation summaries." data-video=""><label for="f_repreports">Reputation Reports</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_api" class="slide-checkbox" value="api" data-title="API" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=API" data-talktrack="Feed our intelligence directly into your data lake." data-video=""><label for="f_api">API</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_askaiq" class="slide-checkbox" value="ask aiq" data-title="Ask AIQ" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Ask+AIQ" data-talktrack="Interact with your data using conversational AI." data-video=""><label for="f_askaiq">Ask AIQ</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_exec" class="slide-checkbox" value="executive briefings" data-title="Executive Briefings" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Briefings" data-talktrack="Curated summaries for the C-suite." data-video=""><label for="f_exec">Executive Briefings</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_alerts" class="slide-checkbox" value="social media alerts" data-title="Social Media Alerts" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Alerts" data-talktrack="Real-time notifications for crisis spikes." data-video=""><label for="f_alerts">Social Media Alerts</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_core" class="slide-checkbox" value="core platform" data-title="Core Platform" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Core" data-talktrack="The foundation of our platform." data-video=""><label for="f_core">Core Platform</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_dashboard" class="slide-checkbox" value="risk dashboard" data-title="Risk Dashboard" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Dashboard" data-talktrack="A unified view of global regulatory and supply chain risk." data-video=""><label for="f_dashboard">Risk Dashboard</label></div>
+
+          <div class="checkbox-group none-option">
+            <input type="checkbox" id="none_2" class="none-checkbox" value="none">
+            <label for="none_2">None of the above</label>
+          </div>
+
+          <div class="button-group">
+            <button type="button" class="btn-back" onclick="prevStep(2)">&#8592; Back</button>
+            <button type="button" class="btn-next" onclick="nextStep(2)">Next: Use Cases &#8594;</button>
+          </div>
+        </div>
+
+        <div class="step" id="step3">
+          <div class="step-indicator">Step 4 of 6</div>
+          <h3>Use Cases</h3>
+          
+          <div class="checkbox-group"><input type="checkbox" id="f_uc_comp" class="slide-checkbox" value="competitor benchmarking" data-title="Competitor Benchmarking" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Competitor" data-talktrack="See how your SOV compares to top rivals." data-video=""><label for="f_uc_comp">Competitor Benchmarking</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_uc_crisis" class="slide-checkbox" value="crisis management" data-title="Crisis Management" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Crisis" data-talktrack="Navigate a crisis with real-time sentiment tracking." data-video=""><label for="f_uc_crisis">Crisis Management</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_uc_rep" class="slide-checkbox" value="reputation management" data-title="Reputation Management" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Reputation" data-talktrack="Monitor long-term brand equity over time." data-video=""><label for="f_uc_rep">Reputation Management</label></div>
+
+          <div class="checkbox-group none-option">
+            <input type="checkbox" id="none_3" class="none-checkbox" value="none">
+            <label for="none_3">None of the above</label>
+          </div>
+
+          <div class="button-group">
+            <button type="button" class="btn-back" onclick="prevStep(3)">&#8592; Back</button>
+            <button type="button" class="btn-next" onclick="nextStep(3)">Next: Case Studies &#8594;</button>
+          </div>
+        </div>
+
+        <div class="step" id="step4">
+          <div class="step-indicator">Step 5 of 6</div>
+          <h3>Industry Case Studies</h3>
+          
+          <div class="checkbox-group"><input type="checkbox" id="f_cs_retail" class="slide-checkbox" value="retail (cyber breach)" data-title="Retail (Cyber Breach)" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Cyber" data-talktrack="How a global retailer managed a massive data leak." data-video=""><label for="f_cs_retail">Retail (Cyber Breach)</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_cs_retailsc" class="slide-checkbox" value="retail (supply chain)" data-title="Retail (Supply Chain)" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Supply+Chain" data-talktrack="Tracking ESG risks deep in the supplier network." data-video=""><label for="f_cs_retailsc">Retail (Supply Chain)</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_cs_alcohol" class="slide-checkbox" value="alcohol & beverage (supply chain)" data-title="Alcohol & Beverage" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Bev" data-talktrack="Protecting brand integrity during a product recall." data-video=""><label for="f_cs_alcohol">Alcohol & Beverage (Supply Chain)</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_cs_fmcg" class="slide-checkbox" value="fmcg (ingredient risk)" data-title="FMCG (Ingredient Risk)" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=FMCG" data-talktrack="Spotting early warning signs on ingredient health concerns." data-video=""><label for="f_cs_fmcg">FMCG (Ingredient Risk)</label></div>
+
+          <div class="checkbox-group none-option">
+            <input type="checkbox" id="none_4" class="none-checkbox" value="none">
+            <label for="none_4">None of the above</label>
+          </div>
+
+          <div class="button-group">
+            <button type="button" class="btn-back" onclick="prevStep(4)">&#8592; Back</button>
+            <button type="button" class="btn-next" onclick="nextStep(4)">Next: Appendix &#8594;</button>
+          </div>
+        </div>
+
+        <div class="step" id="step5">
+          <div class="step-indicator">Step 6 of 6</div>
+          <h3>Appendix: Blinded Reports</h3>
+          
+          <div class="checkbox-group"><input type="checkbox" id="f_app_rep" class="slide-checkbox" value="blinded reputation report" data-title="Blinded Reputation Report" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Rep+Report" data-talktrack="A sample of our premium advisory delivery." data-video=""><label for="f_app_rep">Blinded Reputation Report</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_app_impact" class="slide-checkbox" value="blinded media impact report" data-title="Blinded Media Impact Report" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Media+Impact" data-talktrack="Proving PR ROI to the executive board." data-video=""><label for="f_app_impact">Blinded Media Impact Report</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_app_deep" class="slide-checkbox" value="blinded deep dive report" data-title="Blinded Deep Dive Report" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Deep+Dive" data-talktrack="An exhaustive analysis of a single event." data-video=""><label for="f_app_deep">Blinded Deep Dive Report</label></div>
+
+          <div class="checkbox-group none-option">
+            <input type="checkbox" id="none_5" class="none-checkbox" value="none">
+            <label for="none_5">None of the above</label>
+          </div>
+
+          <div class="button-group" id="finalButtonGroup">
+            <button type="button" class="btn-back" onclick="prevStep(5)">&#8592; Back</button>
+            <button type="submit" id="submitBtn" class="btn-next">Generate Custom Deck</button>
+          </div>
+          
+          <div id="statusMessage" style="display:none;"></div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- RIGHT SIDE: SELECTED SLIDES PANEL -->
+    <div class="side-panel" id="sidePanel">
+        <h3>Selected Slides</h3>
+        <div id="selectedSlidesList">
+            <p class="empty-state">No slides selected yet. Start checking boxes to build your deck!</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+  let currentStep = 0;
+  const steps = document.querySelectorAll('.step');
+
+  // Step Navigation Logic
+  function showStep(index) {
+    steps.forEach((step, i) => {
+      step.classList.toggle('active', i === index);
+    });
+  }
+
+  function nextStep(stepIndex) {
+    if (stepIndex === 0) {
+      const email = document.getElementById('email').value;
+      const company = document.getElementById('company').value;
+      if (!email || !company) {
+        alert("Please enter an email and company name to proceed.");
+        return;
+      }
+    }
+    if (currentStep < steps.length - 1) {
+      currentStep++;
+      showStep(currentStep);
+    }
+  }
+
+  function prevStep(stepIndex) {
+    if (currentStep > 0) {
+      currentStep--;
+      showStep(currentStep);
+    }
+  }
+
+  // --- NEW LOGIC: Updating the Side Panel ---
+  function updateSidePanel() {
+      const listContainer = document.getElementById('selectedSlidesList');
+      // Only select standard checkboxes (ignores 'none' options)
+      const checkedBoxes = document.querySelectorAll('.slide-checkbox:checked');
+
+      if (checkedBoxes.length === 0) {
+          listContainer.innerHTML = '<p class="empty-state">No slides selected yet. Start checking boxes to build your deck!</p>';
+          return;
+      }
+
+      let htmlContent = '';
+      checkedBoxes.forEach(cb => {
+          const title = cb.getAttribute('data-title');
+          const imgUrl = cb.getAttribute('data-img');
+          const talkTrack = cb.getAttribute('data-talktrack');
+          const videoUrl = cb.getAttribute('data-video');
+
+          htmlContent += `
+              <div class="selected-slide">
+                  <h4>${title}</h4>
+                  ${imgUrl ? `<img src="${imgUrl}" alt="${title}">` : ''}
+                  ${talkTrack ? `<div class="talk-track"><strong>Talk Track:</strong><br>${talkTrack}</div>` : ''}
+                  ${videoUrl && videoUrl.trim() !== '' ? `<a href="${videoUrl}" target="_blank" class="video-link">▶ Watch Walkthrough</a>` : ''}
+              </div>
+          `;
+      });
+      
+      listContainer.innerHTML = htmlContent;
+  }
+
+  // --- NEW LOGIC: Handling Checkboxes & The "None" Option ---
+  document.querySelectorAll('.step').forEach(step => {
+      const noneCheckbox = step.querySelector('.none-checkbox');
+      const slideCheckboxes = step.querySelectorAll('.slide-checkbox');
+
+      // Listen to "None" option
+      if (noneCheckbox) {
+          noneCheckbox.addEventListener('change', function(e) {
+              if (e.target.checked) {
+                  // If 'None' is checked, uncheck all others in this section
+                  slideCheckboxes.forEach(cb => cb.checked = false);
+                  updateSidePanel(); // Refresh UI
+              }
+          });
+      }
+
+      // Listen to Standard Options
+      slideCheckboxes.forEach(cb => {
+          cb.addEventListener('change', function(e) {
+              if (e.target.checked && noneCheckbox) {
+                  // If a standard option is checked, uncheck 'None'
+                  noneCheckbox.checked = false;
+              }
+              updateSidePanel(); // Refresh UI
+          });
+      });
+  });
+
+  // Form Reset Logic
+  function startAgain() {
+    document.getElementById('deckForm').reset();
+    updateSidePanel(); // Clear the side panel
+    
+    document.getElementById('finalButtonGroup').style.display = 'flex';
+    document.getElementById('statusMessage').style.display = 'none';
+    
+    const btn = document.getElementById('submitBtn');
+    btn.innerText = "Generate Custom Deck";
+    btn.style.backgroundColor = "#6C2BD9";
+    btn.disabled = false;
+
+    currentStep = 0;
+    showStep(currentStep);
+  }
+
+  // Form Submission Logic
+  document.getElementById('deckForm').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('statusMessage');
+    btn.innerText = "Generating Deck...";
+    btn.style.backgroundColor = "#999";
+    btn.disabled = true;
+
+    // We collect ALL checked boxes to send to the server (including 'none' if needed by your script)
+    const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    const choices = Array.from(checkedBoxes).map(cb => cb.value.toLowerCase());
+
+    const payload = {
+      email: document.getElementById('email').value,
+      company: document.getElementById('company').value,
+      choices: choices
+    };
+
+    // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbypK2dxP6Hhsks-d7qMVhX9bUnGdTimP1vaeG4-SpFoIuODnarSeCezoyMF846bepGU/exec";
+
+    fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success") {
+        document.getElementById('finalButtonGroup').style.display = 'none';
+        
+        msg.style.display = "block";
+        msg.innerHTML = `
+          <div style="color: #10b981; font-size: 18px; margin-bottom: 10px;">🎉 Deck generated successfully! Check your email.</div>
+          <div class="success-actions">
+            <button type="button" class="btn-outline" onclick="startAgain()">Start Again</button>
+            <button type="button" class="btn-next" style="width: 48%;" onclick="window.location.href='https://signal-ai.com/assets-library/'">Insights Library</button>
+          </div>
+        `;
+      } else {
+        throw new Error("Failed to generate");
+      }
+    })
+    .catch(error => {
+      msg.style.display = "block";
+      msg.style.color = "#ef4444";
+      msg.innerHTML = "There was an error generating the deck. Please try again.";
+      btn.innerText = "Try Again";
+      btn.style.backgroundColor = "#6C2BD9";
+      btn.disabled = false;
+    });
+  });
+</script>
+</body>
+</html>
