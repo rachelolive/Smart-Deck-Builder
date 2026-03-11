@@ -14,7 +14,6 @@
             color: #333;
         }
 
-        /* Layout Container */
         .app-container {
             display: flex;
             gap: 30px;
@@ -23,17 +22,15 @@
             align-items: flex-start;
         }
 
-        /* Clean, Elegant Styling */
         .form-wrapper { 
             flex: 1;
             background: #ffffff; 
             padding: 40px; 
             border-radius: 16px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.06); 
-            min-width: 0; /* Prevents flex blowout */
+            min-width: 0;
         }
 
-        /* Side Panel Styling */
         .side-panel {
             flex: 1;
             background: #ffffff;
@@ -47,9 +44,17 @@
             min-width: 0;
         }
 
-        .side-panel h3 { margin-bottom: 15px; border-bottom: 2px solid #f1f1f1; padding-bottom: 15px; }
-        
-        /* Selected Slide Cards */
+        .side-panel h3 { margin-bottom: 5px; border-bottom: 2px solid #f1f1f1; padding-bottom: 15px; }
+
+        .drag-hint {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .selected-slide {
             margin-bottom: 25px;
             background: #fafafa;
@@ -57,8 +62,57 @@
             border-radius: 12px;
             padding: 15px;
             animation: fadeIn 0.3s;
+            cursor: grab;
+            transition: box-shadow 0.2s, border-color 0.2s, opacity 0.2s;
         }
-        .selected-slide h4 { margin: 0 0 10px 0; color: #1a1a1a; font-size: 15px; }
+        .selected-slide:active { cursor: grabbing; }
+        .selected-slide.drag-over {
+            border-color: #6C2BD9;
+            box-shadow: 0 0 0 2px rgba(108, 43, 217, 0.2);
+        }
+        .selected-slide.dragging {
+            opacity: 0.4;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .slide-header h4 {
+            margin: 0;
+            color: #1a1a1a;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .drag-handle {
+            color: #ccc;
+            font-size: 14px;
+            cursor: grab;
+            user-select: none;
+            letter-spacing: 1px;
+        }
+        .remove-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #ccc;
+            padding: 0 2px;
+            line-height: 1;
+            border-radius: 4px;
+            transition: color 0.2s, background 0.2s;
+            font-family: 'Poppins', sans-serif;
+            flex-shrink: 0;
+        }
+        .remove-btn:hover {
+            color: #e53e3e;
+            background: #fff5f5;
+        }
+
         .selected-slide img { 
             width: 100%; 
             height: auto; 
@@ -75,6 +129,7 @@
             border-radius: 0 6px 6px 0;
             margin-bottom: 10px;
             line-height: 1.5;
+            white-space: pre-line;
         }
         .video-link {
             font-size: 13px;
@@ -92,7 +147,17 @@
         .video-link:hover { background: #e9deff; }
         .empty-state { color: #888; font-style: italic; font-size: 14px; text-align: center; margin-top: 40px; }
 
-        /* Step Containers */
+        .slide-count {
+            font-size: 12px;
+            color: #6C2BD9;
+            font-weight: 600;
+            background: #f5f0ff;
+            padding: 3px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
         .step { display: none; animation: fadeIn 0.4s; }
         .step.active { display: block; }
         
@@ -101,7 +166,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Typography & Layout */
         h3 { 
             margin-top: 0; 
             margin-bottom: 25px; 
@@ -120,7 +184,6 @@
         .form-group { margin-bottom: 25px; }
         label.field-label { font-weight: 500; font-size: 14px; margin-bottom: 8px; display: block; color: #444; }
         
-        /* Inputs & Checkboxes */
         input[type="text"], input[type="email"] { 
             width: 100%; 
             padding: 14px 16px; 
@@ -154,7 +217,6 @@
         .checkbox-group label { cursor: pointer; width: 100%; font-weight: 400; }
         .none-option { border: none; background: #f9f9f9; color: #666; font-style: italic; }
 
-        /* Buttons */
         .button-group { 
             display: flex; 
             justify-content: space-between; 
@@ -176,14 +238,12 @@
         .btn-back { background-color: #f1f1f1; color: #555; width: 30%; }
         .btn-back:hover { background-color: #e2e2e2; }
         
-        /* Success Action Buttons */
         .btn-outline { background-color: transparent; color: #6C2BD9; border: 2px solid #6C2BD9; width: 48%; }
         .btn-outline:hover { background-color: #f5f0ff; }
         .success-actions { display: flex; justify-content: space-between; gap: 15px; margin-top: 25px; }
 
         #statusMessage { text-align: center; margin-top: 20px; font-weight: 500; }
 
-        /* Responsive Design */
         @media (max-width: 850px) {
             .app-container { flex-direction: column; }
             .side-panel { position: static; max-height: none; width: 100%; box-sizing: border-box; }
@@ -194,7 +254,6 @@
 <body>
 
 <div class="app-container">
-    <!-- LEFT SIDE: FORM -->
     <div class="form-wrapper">
       <form id="deckForm">
         
@@ -202,7 +261,6 @@
           <div class="step-indicator">Step 1 of 6</div>
           <h3>Client Information</h3>
           <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Enter these details to begin creating your custom deck.</p>
-          
           <div class="form-group">
             <label class="field-label">Email Address</label>
             <input type="email" id="email" placeholder="you@signal-ai.com" required>
@@ -220,12 +278,11 @@
           <div class="step-indicator">Step 2 of 6</div>
           <h3>Core Inclusions</h3>
           
-          <!-- Example formatting: Add data-title, data-img, data-talktrack, and data-video to your options -->
           <div class="checkbox-group">
             <input type="checkbox" id="f_about" class="slide-checkbox" value="about signal ai" 
                    data-title="About Signal AI" 
                    data-img="about_signal" 
-                   data-talktrack="For context, we’ve been doing AI-driven reputation risk monitoring for over 10 years—this is our bread and butter. Unlike others, we aren't just 'slapping' a chat engine onto existing software; this is our own proprietary technology. We currently work with over 800 global clients across nearly every industry, supporting everyone from PR specialists to Chief Communications Officers." 
+                   data-talktrack="For context, we've been doing AI-driven reputation risk monitoring for over 10 years—this is our bread and butter. Unlike others, we aren't just 'slapping' a chat engine onto existing software; this is our own proprietary technology. We currently work with over 800 global clients across nearly every industry, supporting everyone from PR specialists to Chief Communications Officers." 
                    data-video="https://us-59724.app.gong.io/call?id=7300518344311744504&highlights=%5B%7B%22type%22%3A%22SHARE%22%2C%22from%22%3A1302%2C%22to%22%3A1650%7D%5D">
             <label for="f_about">About Signal AI</label>
           </div>
@@ -234,11 +291,11 @@
             <input type="checkbox" id="f_explain" class="slide-checkbox" value="explain our ai"
                    data-title="Explain our AI" 
                    data-img="our-ai-1,our-ai-2,our-ai-3,our-ai-4,our-ai-5,our-ai-6,our-ai-7,our-ai-8,our-ai-9" 
-                   data-talktrack="Our AI crunches huge amounts of information from the world’s content to spot critical signals in the noise so that businesses can get ahead of risk, seize opportunities, and make confident business decisions. Our solutions ingest the world’s data at scale, transforming unstructured data with the power of AI. Across 226 markets, and in 75+ languages. Our AI reads and labels 5 and a half million pieces of content every single day. So how do we do it?
+                   data-talktrack="Our AI crunches huge amounts of information from the world's content to spot critical signals in the noise so that businesses can get ahead of risk, seize opportunities, and make confident business decisions. Our solutions ingest the world's data at scale, transforming unstructured data with the power of AI. Across 226 markets, and in 75+ languages. Our AI reads and labels 5 and a half million pieces of content every single day. So how do we do it?
 
 With no human input, our AI identifies themes, topics, people, organizations that are being talked about in the media and can understand signals such as sentiment (how is this organization being talked about? Positively or negative?), salience (is this article really about this organization or is it just a passing mention). 
 
-That’s done at scale - across all the sources that matter. That information is aggregated allowing us to uncover secondary signals such as association (looking at the whole universe of content, how closely associated is my organization to a key topic?) and industry rankings (looking at the whole universe of content, how do stand up against competitors).
+That's done at scale - across all the sources that matter. That information is aggregated allowing us to uncover secondary signals such as association (looking at the whole universe of content, how closely associated is my organization to a key topic?) and industry rankings (looking at the whole universe of content, how do stand up against competitors).
 
 Then, with all of that structured data, we add a layer of generative AI or in some cases, expert human analysis to deliver easily digestible, actionable insights." 
                    data-video="https://us-59724.app.gong.io/call?id=7300518344311744504&highlights=%5B%7B%22type%22%3A%22SHARE%22%2C%22from%22%3A1302%2C%22to%22%3A1650%7D%5D">
@@ -253,20 +310,19 @@ Then, with all of that structured data, we add a layer of generative AI or in so
 
 In practice, we use the capabilities you see on the right to do more than just report numbers. We use data to surgically guide rebranding efforts, protect reputations during executive transitions, and provide the change management consulting needed to move a comms department from crawling to flying with data adoption.
 
-What makes us different is that we’ve cherry-picked a unique mix of talent from big PR shops like Weber alongside investigative and risk experts from firms like Ipsos, Deloitte, and Kroll. We have the PhDs and Master’s degrees to handle the technical rigor, but our real value is providing the so what. We aren’t just analysts; we are advisors. Our goal is to cut through the noise and give you the three specific things you should do more of—or less of—based on what the data is actually telling us.r" 
+What makes us different is that we've cherry-picked a unique mix of talent from big PR shops like Weber alongside investigative and risk experts from firms like Ipsos, Deloitte, and Kroll. We have the PhDs and Master's degrees to handle the technical rigor, but our real value is providing the so what. We aren't just analysts; we are advisors. Our goal is to cut through the noise and give you the three specific things you should do more of—or less of—based on what the data is actually telling us." 
                    data-video="https://us-59724.app.gong.io/call?id=7602425902243882180&highlights=%5B%7B%22type%22%3A%22SHARE%22%2C%22from%22%3A220%2C%22to%22%3A369%7D%5D">
             <label for="f_strategic">Strategic Solutions (Team Intro)</label>
           </div>
 
           <div class="checkbox-group"><input type="checkbox" id="f_rep" class="slide-checkbox" value="our approach to reputation" data-title="Approach to Reputation" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Reputation" data-talktrack="Here is how we quantify reputation." data-video="https://youtube.com/watch?v=example"><label for="f_rep">Our approach to reputation</label></div>
-          <div class="checkbox-group"><input type="checkbox" id="f_risk" class="slide-checkbox" value="our approach to risk" data-title="Approach to Risk" data-img="approach-risk-1, approach-risk-2, approach-risk-3, approach-risk-4, approach-risk-5, approach-risk-6, approach-risk-7, approach-risk-8, approach-risk-9, approach-risk-10, approach-risk-11, approach-risk-12, approach-risk-13" data-talktrack="We’re living in a new era where the world is essentially de-globalizing, and that’s creating a level of volatility that international businesses just haven't seen before. For a global brand like yours, threats now move through your operations with incredible speed, making you more at risk than ever. When you look at the numbers, they’re honestly staggering—we’re seeing six trillion dollars lost to cybercrime, over two trillion in natural disaster costs, and hundreds of billions more tied up in supply chain delays and regulatory compliance. Even a single greenwashing scandal can cost a company upwards of thirty billion dollars.
-The ERM teams we speak with are well aware of this, but they feel like they’re fighting a losing battle. We actually worked with Oliver Wyman to survey risk leaders across various industries, and they all shared the same frustrations. Their responsibilities are growing, but they’re still forced to rely on manual, ad-hoc research. When they try to dig for data, it’s often siloed or geographically limited. If you’re just searching on Google for risks in another country, you’re only seeing what’s relevant to your current location, and critical information might be buried on page ten or hidden in a different language. The biggest issue is that by the time your team actually puts a report together, it’s already outdated. Staying on that path doesn't just hurt the bottom line; it puts your entire reputation and share price on the line.
-That is exactly why we created Signal AI. We help you uncover the critical signals in the outside world so you can actually navigate and get ahead of these risks. We do this by mapping your exposure through three dimensions: direct risks to your people and assets, adjacent risks involving your competitors and suppliers, and those big horizon risks that give you a wide-angle view of what’s brewing in key global markets.
-This completely transforms your risk process in three main ways. First, it changes how you monitor the world. Instead of hunting for info, you get real-time alerts on everything from regulatory speculation to social media shifts from key opinion leaders. You can even have daily AI summaries delivered straight to your phone so you’re always in the loop. Second, it changes how you evaluate those threats. We help you benchmark your exposure against the rest of your industry and use heatmaps to understand the root causes of a risk before it blows up. Finally, it makes collaboration seamless. We give everyone—from the CRO to the Communications team—one single, continuously updated view of the risk landscape. You can generate custom board reports in seconds or plug our data directly into the management tools you’re already using. It’s about moving away from reactive guesswork and giving your team a real-time edge." data-video=""><label for="f_risk">Our approach to risk</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_risk" class="slide-checkbox" value="our approach to risk" data-title="Approach to Risk" data-img="approach-risk-1, approach-risk-2, approach-risk-3, approach-risk-4, approach-risk-5, approach-risk-6, approach-risk-7, approach-risk-8, approach-risk-9, approach-risk-10, approach-risk-11, approach-risk-12, approach-risk-13" data-talktrack="We're living in a new era where the world is essentially de-globalizing, and that's creating a level of volatility that international businesses just haven't seen before. For a global brand like yours, threats now move through your operations with incredible speed, making you more at risk than ever. When you look at the numbers, they're honestly staggering—we're seeing six trillion dollars lost to cybercrime, over two trillion in natural disaster costs, and hundreds of billions more tied up in supply chain delays and regulatory compliance. Even a single greenwashing scandal can cost a company upwards of thirty billion dollars.
+The ERM teams we speak with are well aware of this, but they feel like they're fighting a losing battle. We actually worked with Oliver Wyman to survey risk leaders across various industries, and they all shared the same frustrations. Their responsibilities are growing, but they're still forced to rely on manual, ad-hoc research. When they try to dig for data, it's often siloed or geographically limited. If you're just searching on Google for risks in another country, you're only seeing what's relevant to your current location, and critical information might be buried on page ten or hidden in a different language. The biggest issue is that by the time your team actually puts a report together, it's already outdated. Staying on that path doesn't just hurt the bottom line; it puts your entire reputation and share price on the line.
+That is exactly why we created Signal AI. We help you uncover the critical signals in the outside world so you can actually navigate and get ahead of these risks. We do this by mapping your exposure through three dimensions: direct risks to your people and assets, adjacent risks involving your competitors and suppliers, and those big horizon risks that give you a wide-angle view of what's brewing in key global markets.
+This completely transforms your risk process in three main ways. First, it changes how you monitor the world. Instead of hunting for info, you get real-time alerts on everything from regulatory speculation to social media shifts from key opinion leaders. You can even have daily AI summaries delivered straight to your phone so you're always in the loop. Second, it changes how you evaluate those threats. We help you benchmark your exposure against the rest of your industry and use heatmaps to understand the root causes of a risk before it blows up. Finally, it makes collaboration seamless. We give everyone—from the CRO to the Communications team—one single, continuously updated view of the risk landscape. You can generate custom board reports in seconds or plug our data directly into the management tools you're already using. It's about moving away from reactive guesswork and giving your team a real-time edge." data-video=""><label for="f_risk">Our approach to risk</label></div>
           <div class="checkbox-group"><input type="checkbox" id="f_roadmap" class="slide-checkbox" value="our product roadmap" data-title="Product Roadmap" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Roadmap" data-talktrack="A sneak peek at what is coming in Q3 and Q4." data-video=""><label for="f_roadmap">Our product roadmap</label></div>
           <div class="checkbox-group"><input type="checkbox" id="f_predictive" class="slide-checkbox" value="predictive intelligence" data-title="Predictive Intelligence" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Predictive" data-talktrack="Shift from reactive tracking to predictive strategy." data-video=""><label for="f_predictive">Predictive Intelligence</label></div>
 
-          <!-- None Option -->
           <div class="checkbox-group none-option">
             <input type="checkbox" id="none_1" class="none-checkbox" value="none">
             <label for="none_1">None of the above</label>
@@ -282,11 +338,11 @@ This completely transforms your risk process in three main ways. First, it chang
           <div class="step-indicator">Step 3 of 6</div>
           <h3>Primary Area of Interest</h3>
           
-          <div class="checkbox-group"><input type="checkbox" id="f_social" class="slide-checkbox" value="premium social intelligence" data-title="Premium Social Intelligence" data-img="premium-social-1, premium-social-2, premium-social-3, premium-social-4, premium-social-5" data-talktrack="We don’t believe in drowning you in a fire hose of social media data. Instead, our approach is built on a curated ecosystem of eight key platforms and over 100,000 high-impact, influential sources. We also have the flexibility to bake in bespoke profiles—the specific voices or competitors that matter most to your business—so you’re seeing a strategic map rather than just full-blown social listening. This allows you to track volume and engagement through a much sharper lens.
+          <div class="checkbox-group"><input type="checkbox" id="f_social" class="slide-checkbox" value="premium social intelligence" data-title="Premium Social Intelligence" data-img="premium-social-1, premium-social-2, premium-social-3, premium-social-4, premium-social-5" data-talktrack="We don't believe in drowning you in a fire hose of social media data. Instead, our approach is built on a curated ecosystem of eight key platforms and over 100,000 high-impact, influential sources. We also have the flexibility to bake in bespoke profiles—the specific voices or competitors that matter most to your business—so you're seeing a strategic map rather than just full-blown social listening. This allows you to track volume and engagement through a much sharper lens.
 
 Beyond the live platform, we integrate these insights directly into your high-level reporting. For example, we can pull these social metrics into your quarterly media impact reports to track your brand specifically against the competition or broader industry topics. This data can also be fed into your daily newsletters and bulletins to keep your team briefed in real-time.
 
-Essentially, while our platform is built for that high-quality, restricted data set, we have the reach to go much wider whenever a project requires it. It’s all about getting you the so what without the noise." data-video="https://us-59724.app.gong.io/call?id=1806137895217102548&highlights=%5B%7B%22type%22%3A%22SHARE%22%2C%22from%22%3A305%2C%22to%22%3A395%7D%5D"><label for="f_social">Premium Social Intelligence</label></div>
+Essentially, while our platform is built for that high-quality, restricted data set, we have the reach to go much wider whenever a project requires it. It's all about getting you the so what without the noise." data-video="https://us-59724.app.gong.io/call?id=1806137895217102548&highlights=%5B%7B%22type%22%3A%22SHARE%22%2C%22from%22%3A305%2C%22to%22%3A395%7D%5D"><label for="f_social">Premium Social Intelligence</label></div>
           <div class="checkbox-group"><input type="checkbox" id="f_analytics" class="slide-checkbox" value="advanced analytics & reporting" data-title="Advanced Analytics" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Analytics" data-talktrack="Custom charts that export right to PowerPoint." data-video=""><label for="f_analytics">Advanced Analytics & Reporting</label></div>
           <div class="checkbox-group"><input type="checkbox" id="f_newsletters" class="slide-checkbox" value="newsletters" data-title="Newsletters" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Newsletters" data-talktrack="Automate your morning executive briefing." data-video=""><label for="f_newsletters">Newsletters</label></div>
           <div class="checkbox-group"><input type="checkbox" id="f_repreports" class="slide-checkbox" value="reputation reports" data-title="Reputation Reports" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Rep+Reports" data-talktrack="Quarterly board-ready reputation summaries." data-video=""><label for="f_repreports">Reputation Reports</label></div>
@@ -335,11 +391,26 @@ Essentially, while our platform is built for that high-quality, restricted data 
           <div class="checkbox-group"><input type="checkbox" id="f_cs_retailsc" class="slide-checkbox" value="retail (supply chain)" data-title="Retail (Supply Chain)" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Supply+Chain" data-talktrack="Tracking ESG risks deep in the supplier network." data-video=""><label for="f_cs_retailsc">Retail (Supply Chain)</label></div>
           <div class="checkbox-group"><input type="checkbox" id="f_cs_alcohol" class="slide-checkbox" value="alcohol & beverage (supply chain)" data-title="Alcohol & Beverage (PR & Comms)" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=FMCG" data-talktrack="Protecting brand integrity during a product recall." data-video=""><label for="f_cs_alcohol">Alcohol & Beverage (Supply Chain)</label></div>
           <div class="checkbox-group"><input type="checkbox" id="f_cs_fmcg" class="slide-checkbox" value="fmcg (ingredient risk)" data-title="FMCG (Ingredient Risk)" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=FMCG" data-talktrack="Spotting early warning signs on ingredient health concerns." data-video=""><label for="f_cs_fmcg">FMCG (Ingredient Risk)</label></div>
+
           <div class="checkbox-group">
-  <input type="checkbox" id="f_cs_auto_risk" class="slide-checkbox" value="auto-risk" 
-         data-title="Auto (Risk)" 
-         data-img="auto-risk-case-study" 
-         data-talktrack="An international spirits and beverages company's Enterprise Risk Management (ERM) team faced significant operational shifts following a 13% company-wide workforce reduction in January. This downsizing left the smaller risk team with reduced capacity to manually research and track global emerging risks. Historically, the team reported on risks only twice a year, but they recognized an urgent need to adopt a more real-time and forward-looking approach.
+            <input type="checkbox" id="f_cs_alcohol_risk" class="slide-checkbox" value="alcohol & beverage (supply chain - risk)" 
+                   data-title="Alcohol & Beverage (Risk)" 
+                   data-img="alcohol-risk-case-study" 
+                   data-talktrack="An international spirits and beverages company's Enterprise Risk Management (ERM) team faced significant operational shifts following a 13% company-wide workforce reduction in January. This downsizing left the smaller risk team with reduced capacity to manually research and track global emerging risks. Historically, the team reported on risks only twice a year, but they recognized an urgent need to adopt a more real-time and forward-looking approach.
+Their existing technology stack was ill-equipped for this transition:
+Everbridge: Used primarily for disaster recovery.
+Resolver: Utilized for social monitoring.
+Gap: They lacked a dedicated forward‑looking risk intelligence platform to identify threats before they impacted revenue.
+Buyer Persona: The decision was led by the ERM lead. The $60k budget was pre‑allocated, which fell below the company's RFP threshold, allowing for a streamlined purchase without procurement involvement." 
+                   data-video="">
+            <label for="f_cs_alcohol_risk">Alcohol & Beverage (Risk)</label>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="f_cs_auto_risk" class="slide-checkbox" value="auto-risk" 
+                   data-title="Auto (Risk)" 
+                   data-img="auto-risk-case-study" 
+                   data-talktrack="An international spirits and beverages company's Enterprise Risk Management (ERM) team faced significant operational shifts following a 13% company-wide workforce reduction in January. This downsizing left the smaller risk team with reduced capacity to manually research and track global emerging risks. Historically, the team reported on risks only twice a year, but they recognized an urgent need to adopt a more real-time and forward-looking approach.
 Their existing technology stack was ill-equipped for this transition:
 Everbridge: Used primarily for disaster recovery.
 Resolver: Utilized for social monitoring.
@@ -370,18 +441,18 @@ The company chose the platform due to its superior data quality and depth of ins
 The platform met the specific requirement of:
 Supporting both deep forward-looking analysis and clear board‑level reporting.
 Telling them where the risks were, rather than just providing tons of data to sort through." 
-         data-video="">
-  <label for="f_cs_auto_risk">Auto (Risk)</label>
-</div>
+                   data-video="">
+            <label for="f_cs_auto_risk">Auto (Risk)</label>
+          </div>
 
-<div class="checkbox-group">
-  <input type="checkbox" id="f_cs_energy_risk" class="slide-checkbox" value="energy-risk" 
-         data-title="Energy (Risk)" 
-         data-img="energy-risk" 
-         data-talktrack="Placeholder" 
-         data-video="">
-  <label for="f_cs_energy_risk">Energy (Risk)</label>
-</div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="f_cs_energy_risk" class="slide-checkbox" value="energy-risk" 
+                   data-title="Energy (Risk)" 
+                   data-img="energy-risk" 
+                   data-talktrack="Placeholder" 
+                   data-video="">
+            <label for="f_cs_energy_risk">Energy (Risk)</label>
+          </div>
 
           <div class="checkbox-group none-option">
             <input type="checkbox" id="none_4" class="none-checkbox" value="none">
@@ -432,11 +503,13 @@ Telling them where the risks were, rather than just providing tons of data to so
   let currentStep = 0;
   const steps = document.querySelectorAll('.step');
 
-  // Step Navigation Logic
+  // -------------------------------------------------------
+  // ORDERED SLIDES ARRAY — single source of truth for order
+  // -------------------------------------------------------
+  let selectedSlides = []; // array of checkbox IDs in user-defined order
+
   function showStep(index) {
-    steps.forEach((step, i) => {
-      step.classList.toggle('active', i === index);
-    });
+    steps.forEach((step, i) => step.classList.toggle('active', i === index));
   }
 
   function nextStep(stepIndex) {
@@ -461,78 +534,151 @@ Telling them where the risks were, rather than just providing tons of data to so
     }
   }
 
-  // --- NEW LOGIC: Updating the Side Panel ---
-  function updateSidePanel() {
-      const listContainer = document.getElementById('selectedSlidesList');
-      // Only select standard checkboxes (ignores 'none' options)
-      const checkedBoxes = document.querySelectorAll('.slide-checkbox:checked');
-
-      if (checkedBoxes.length === 0) {
-          listContainer.innerHTML = '<p class="empty-state">No slides selected yet. Start checking boxes to build your deck!</p>';
-          return;
-      }
-
-      let htmlContent = '';
-      checkedBoxes.forEach(cb => {
-          const title = cb.getAttribute('data-title');
-          const imgUrlString = cb.getAttribute('data-img');
-          const talkTrack = cb.getAttribute('data-talktrack');
-          const videoUrl = cb.getAttribute('data-video');
-
-          let imagesHtml = '';
-          if (imgUrlString) {
-              // Split by comma in case you want to show multiple slides for one option
-              const imgUrls = imgUrlString.split(',').map(url => url.trim());
-              imgUrls.forEach(url => {
-                  if (url) imagesHtml += `<img src="${url}" alt="${title}">`;
-              });
-          }
-
-          htmlContent += `
-              <div class="selected-slide">
-                  <h4>${title}</h4>
-                  ${imagesHtml}
-                  ${talkTrack ? `<div class="talk-track"><strong>Talk Track:</strong><br>${talkTrack}</div>` : ''}
-                  ${videoUrl && videoUrl.trim() !== '' ? `<a href="${videoUrl}" target="_blank" class="video-link">▶ Watch Walkthrough</a>` : ''}
-              </div>
-          `;
-      });
-      
-      listContainer.innerHTML = htmlContent;
+  // -------------------------------------------------------
+  // REMOVE a slide from the panel (and uncheck its checkbox)
+  // -------------------------------------------------------
+  function removeSlide(id) {
+    const cb = document.getElementById(id);
+    if (cb) cb.checked = false;
+    selectedSlides = selectedSlides.filter(sid => sid !== id);
+    updateSidePanel();
   }
 
-  // --- NEW LOGIC: Handling Checkboxes & The "None" Option ---
-  document.querySelectorAll('.step').forEach(step => {
-      const noneCheckbox = step.querySelector('.none-checkbox');
-      const slideCheckboxes = step.querySelectorAll('.slide-checkbox');
+  // -------------------------------------------------------
+  // RENDER the side panel from selectedSlides array order
+  // -------------------------------------------------------
+  function updateSidePanel() {
+    const listContainer = document.getElementById('selectedSlidesList');
 
-      // Listen to "None" option
-      if (noneCheckbox) {
-          noneCheckbox.addEventListener('change', function(e) {
-              if (e.target.checked) {
-                  // If 'None' is checked, uncheck all others in this section
-                  slideCheckboxes.forEach(cb => cb.checked = false);
-                  updateSidePanel(); // Refresh UI
-              }
-          });
+    if (selectedSlides.length === 0) {
+      listContainer.innerHTML = '<p class="empty-state">No slides selected yet. Start checking boxes to build your deck!</p>';
+      return;
+    }
+
+    let htmlContent = `<div class="slide-count">${selectedSlides.length} slide${selectedSlides.length !== 1 ? 's' : ''} selected</div>`;
+    htmlContent += `<p class="drag-hint">⠿ Drag cards to reorder · × to remove</p>`;
+
+    selectedSlides.forEach(id => {
+      const cb = document.getElementById(id);
+      if (!cb) return;
+
+      const title = cb.getAttribute('data-title');
+      const imgUrlString = cb.getAttribute('data-img');
+      const talkTrack = cb.getAttribute('data-talktrack');
+      const videoUrl = cb.getAttribute('data-video');
+
+      let imagesHtml = '';
+      if (imgUrlString) {
+        imgUrlString.split(',').map(u => u.trim()).forEach(url => {
+          if (url) imagesHtml += `<img src="${url}" alt="${title}">`;
+        });
       }
 
-      // Listen to Standard Options
-      slideCheckboxes.forEach(cb => {
-          cb.addEventListener('change', function(e) {
-              if (e.target.checked && noneCheckbox) {
-                  // If a standard option is checked, uncheck 'None'
-                  noneCheckbox.checked = false;
-              }
-              updateSidePanel(); // Refresh UI
-          });
+      htmlContent += `
+        <div class="selected-slide" draggable="true" data-id="${id}">
+          <div class="slide-header">
+            <h4><span class="drag-handle">⠿⠿</span>${title}</h4>
+            <button type="button" class="remove-btn" onclick="removeSlide('${id}')" title="Remove slide">×</button>
+          </div>
+          ${imagesHtml}
+          ${talkTrack ? `<div class="talk-track"><strong>Talk Track:</strong><br>${talkTrack}</div>` : ''}
+          ${videoUrl && videoUrl.trim() !== '' ? `<a href="${videoUrl}" target="_blank" class="video-link">▶ Watch Walkthrough</a>` : ''}
+        </div>
+      `;
+    });
+
+    listContainer.innerHTML = htmlContent;
+    initDrag();
+  }
+
+  // -------------------------------------------------------
+  // DRAG AND DROP reordering
+  // -------------------------------------------------------
+  function initDrag() {
+    const cards = document.querySelectorAll('.selected-slide');
+    let draggedId = null;
+
+    cards.forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        draggedId = card.getAttribute('data-id');
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
       });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        document.querySelectorAll('.selected-slide').forEach(c => c.classList.remove('drag-over'));
+      });
+
+      card.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        document.querySelectorAll('.selected-slide').forEach(c => c.classList.remove('drag-over'));
+        card.classList.add('drag-over');
+      });
+
+      card.addEventListener('dragleave', () => {
+        card.classList.remove('drag-over');
+      });
+
+      card.addEventListener('drop', (e) => {
+        e.preventDefault();
+        card.classList.remove('drag-over');
+        const targetId = card.getAttribute('data-id');
+        if (draggedId && draggedId !== targetId) {
+          const fromIndex = selectedSlides.indexOf(draggedId);
+          const toIndex = selectedSlides.indexOf(targetId);
+          selectedSlides.splice(fromIndex, 1);
+          selectedSlides.splice(toIndex, 0, draggedId);
+          updateSidePanel();
+        }
+      });
+    });
+  }
+
+  // -------------------------------------------------------
+  // CHECKBOX LISTENERS — maintain selectedSlides array
+  // -------------------------------------------------------
+  document.querySelectorAll('.step').forEach(step => {
+    const noneCheckbox = step.querySelector('.none-checkbox');
+    const slideCheckboxes = step.querySelectorAll('.slide-checkbox');
+
+    if (noneCheckbox) {
+      noneCheckbox.addEventListener('change', function(e) {
+        if (e.target.checked) {
+          slideCheckboxes.forEach(cb => {
+            if (cb.checked) {
+              cb.checked = false;
+              selectedSlides = selectedSlides.filter(id => id !== cb.id);
+            }
+          });
+          updateSidePanel();
+        }
+      });
+    }
+
+    slideCheckboxes.forEach(cb => {
+      cb.addEventListener('change', function(e) {
+        if (e.target.checked) {
+          if (!selectedSlides.includes(e.target.id)) {
+            selectedSlides.push(e.target.id);
+          }
+          if (noneCheckbox) noneCheckbox.checked = false;
+        } else {
+          selectedSlides = selectedSlides.filter(id => id !== e.target.id);
+        }
+        updateSidePanel();
+      });
+    });
   });
 
-  // Form Reset Logic
+  // -------------------------------------------------------
+  // FORM RESET
+  // -------------------------------------------------------
   function startAgain() {
     document.getElementById('deckForm').reset();
-    updateSidePanel(); // Clear the side panel
+    selectedSlides = [];
+    updateSidePanel();
     
     document.getElementById('finalButtonGroup').style.display = 'flex';
     document.getElementById('statusMessage').style.display = 'none';
@@ -546,7 +692,9 @@ Telling them where the risks were, rather than just providing tons of data to so
     showStep(currentStep);
   }
 
-  // Form Submission Logic
+  // -------------------------------------------------------
+  // FORM SUBMISSION — uses selectedSlides order for payload
+  // -------------------------------------------------------
   document.getElementById('deckForm').addEventListener('submit', function(e) {
     e.preventDefault(); 
     
@@ -556,9 +704,13 @@ Telling them where the risks were, rather than just providing tons of data to so
     btn.style.backgroundColor = "#999";
     btn.disabled = true;
 
-    // We collect ALL checked boxes to send to the server (including 'none' if needed by your script)
-    const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
-    const choices = Array.from(checkedBoxes).map(cb => cb.value.toLowerCase());
+    // Build choices from the ordered selectedSlides array
+    const choices = selectedSlides.map(id => document.getElementById(id).value.toLowerCase());
+
+    // Also include any 'none' checkboxes that are checked
+    document.querySelectorAll('.none-checkbox:checked').forEach(cb => {
+      choices.push(cb.value.toLowerCase());
+    });
 
     const payload = {
       email: document.getElementById('email').value,
@@ -566,7 +718,6 @@ Telling them where the risks were, rather than just providing tons of data to so
       choices: choices
     };
 
-    // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
     const GAS_URL = "https://script.google.com/macros/s/AKfycbypK2dxP6Hhsks-d7qMVhX9bUnGdTimP1vaeG4-SpFoIuODnarSeCezoyMF846bepGU/exec";
 
     fetch(GAS_URL, {
@@ -577,7 +728,6 @@ Telling them where the risks were, rather than just providing tons of data to so
     .then(data => {
       if (data.status === "success") {
         document.getElementById('finalButtonGroup').style.display = 'none';
-        
         msg.style.display = "block";
         msg.innerHTML = `
           <div style="color: #10b981; font-size: 18px; margin-bottom: 10px;">🎉 Deck generated successfully! Check your email.</div>
