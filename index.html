@@ -120,6 +120,33 @@
             margin-bottom: 12px;
             border: 1px solid #ddd;
         }
+        .talk-track-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6C2BD9;
+            background: #f5f0ff;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.2s;
+            width: 100%;
+            text-align: left;
+            justify-content: space-between;
+        }
+        .talk-track-toggle:hover { background: #e9deff; }
+        .talk-track-toggle .toggle-arrow {
+            font-size: 10px;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+        .talk-track-toggle.open .toggle-arrow { transform: rotate(180deg); }
+
         .talk-track {
             font-size: 13px;
             color: #444;
@@ -130,7 +157,10 @@
             margin-bottom: 10px;
             line-height: 1.5;
             white-space: pre-line;
+            display: none;
+            animation: fadeIn 0.2s;
         }
+        .talk-track.open { display: block; }
         .video-link {
             font-size: 13px;
             font-weight: 500;
@@ -242,6 +272,30 @@
         .btn-outline:hover { background-color: #f5f0ff; }
         .success-actions { display: flex; justify-content: space-between; gap: 15px; margin-top: 25px; }
 
+        .notes-toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: #fafafa;
+            border: 1px solid #eaeaea;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            color: #555;
+        }
+        .notes-toggle-row input[type="checkbox"] {
+            accent-color: #6C2BD9;
+            transform: scale(1.2);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .notes-toggle-row label {
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        .notes-toggle-row label strong { color: #1a1a1a; }
+
         #statusMessage { text-align: center; margin-top: 20px; font-weight: 500; }
 
         @media (max-width: 850px) {
@@ -320,8 +374,8 @@ What makes us different is that we've cherry-picked a unique mix of talent from 
 The ERM teams we speak with are well aware of this, but they feel like they're fighting a losing battle. We actually worked with Oliver Wyman to survey risk leaders across various industries, and they all shared the same frustrations. Their responsibilities are growing, but they're still forced to rely on manual, ad-hoc research. When they try to dig for data, it's often siloed or geographically limited. If you're just searching on Google for risks in another country, you're only seeing what's relevant to your current location, and critical information might be buried on page ten or hidden in a different language. The biggest issue is that by the time your team actually puts a report together, it's already outdated. Staying on that path doesn't just hurt the bottom line; it puts your entire reputation and share price on the line.
 That is exactly why we created Signal AI. We help you uncover the critical signals in the outside world so you can actually navigate and get ahead of these risks. We do this by mapping your exposure through three dimensions: direct risks to your people and assets, adjacent risks involving your competitors and suppliers, and those big horizon risks that give you a wide-angle view of what's brewing in key global markets.
 This completely transforms your risk process in three main ways. First, it changes how you monitor the world. Instead of hunting for info, you get real-time alerts on everything from regulatory speculation to social media shifts from key opinion leaders. You can even have daily AI summaries delivered straight to your phone so you're always in the loop. Second, it changes how you evaluate those threats. We help you benchmark your exposure against the rest of your industry and use heatmaps to understand the root causes of a risk before it blows up. Finally, it makes collaboration seamless. We give everyone—from the CRO to the Communications team—one single, continuously updated view of the risk landscape. You can generate custom board reports in seconds or plug our data directly into the management tools you're already using. It's about moving away from reactive guesswork and giving your team a real-time edge." data-video=""><label for="f_risk">Our approach to risk</label></div>
-          <div class="checkbox-group"><input type="checkbox" id="f_roadmap" class="slide-checkbox" value="our product roadmap" data-title="Product Roadmap" data-img="product-roadmap-1, product-roadmap-2, product-roadmap-3, product-roadmap-4, product-roadmap-5, product-roadmap-6, product-roadmap-7, product-roadmap-8" data-talktrack="A sneak peek at what is coming in 2026." data-video=""><label for="f_roadmap">Our product roadmap</label></div>
-          <div class="checkbox-group"><input type="checkbox" id="f_predictive" class="slide-checkbox" value="predictive intelligence" data-title="Predictive Intelligence" data-img="predictive-intelligence-1" data-talktrack="Shift from reactive tracking to predictive strategy." data-video=""><label for="f_predictive">Predictive Intelligence</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_roadmap" class="slide-checkbox" value="our product roadmap" data-title="Product Roadmap" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Roadmap" data-talktrack="A sneak peek at what is coming in Q3 and Q4." data-video=""><label for="f_roadmap">Our product roadmap</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="f_predictive" class="slide-checkbox" value="predictive intelligence" data-title="Predictive Intelligence" data-img="https://placehold.co/600x338/f5f0ff/6C2BD9?text=Predictive" data-talktrack="Shift from reactive tracking to predictive strategy." data-video=""><label for="f_predictive">Predictive Intelligence</label></div>
 
           <div class="checkbox-group none-option">
             <input type="checkbox" id="none_1" class="none-checkbox" value="none">
@@ -478,6 +532,11 @@ Telling them where the risks were, rather than just providing tons of data to so
             <label for="none_5">None of the above</label>
           </div>
 
+          <div class="notes-toggle-row">
+            <input type="checkbox" id="includeTalkTracksAsNotes">
+            <label for="includeTalkTracksAsNotes"><strong>Include talk tracks as slide notes</strong><br>Talk tracks will be added to the presenter notes of each slide in the generated deck.</label>
+          </div>
+
           <div class="button-group" id="finalButtonGroup">
             <button type="button" class="btn-back" onclick="prevStep(5)">&#8592; Back</button>
             <button type="submit" id="submitBtn" class="btn-next">Generate Custom Deck</button>
@@ -574,6 +633,7 @@ Telling them where the risks were, rather than just providing tons of data to so
         });
       }
 
+      const trackId = `tt_${id}`;
       htmlContent += `
         <div class="selected-slide" draggable="true" data-id="${id}">
           <div class="slide-header">
@@ -581,7 +641,13 @@ Telling them where the risks were, rather than just providing tons of data to so
             <button type="button" class="remove-btn" onclick="removeSlide('${id}')" title="Remove slide">×</button>
           </div>
           ${imagesHtml}
-          ${talkTrack ? `<div class="talk-track"><strong>Talk Track:</strong><br>${talkTrack}</div>` : ''}
+          ${talkTrack ? `
+            <button type="button" class="talk-track-toggle" onclick="toggleTalkTrack('${trackId}', this)">
+              <span>Talk Track</span>
+              <span class="toggle-arrow">▼</span>
+            </button>
+            <div class="talk-track" id="${trackId}">${talkTrack}</div>
+          ` : ''}
           ${videoUrl && videoUrl.trim() !== '' ? `<a href="${videoUrl}" target="_blank" class="video-link">▶ Watch Walkthrough</a>` : ''}
         </div>
       `;
@@ -637,6 +703,16 @@ Telling them where the risks were, rather than just providing tons of data to so
   }
 
   // -------------------------------------------------------
+  // TOGGLE TALK TRACK visibility
+  // -------------------------------------------------------
+  function toggleTalkTrack(trackId, btn) {
+    const el = document.getElementById(trackId);
+    if (!el) return;
+    const isOpen = el.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+  }
+
+  // -------------------------------------------------------
   // CHECKBOX LISTENERS — maintain selectedSlides array
   // -------------------------------------------------------
   document.querySelectorAll('.step').forEach(step => {
@@ -677,6 +753,7 @@ Telling them where the risks were, rather than just providing tons of data to so
   // -------------------------------------------------------
   function startAgain() {
     document.getElementById('deckForm').reset();
+    document.getElementById('includeTalkTracksAsNotes').checked = false;
     selectedSlides = [];
     updateSidePanel();
     
@@ -712,10 +789,26 @@ Telling them where the risks were, rather than just providing tons of data to so
       choices.push(cb.value.toLowerCase());
     });
 
+    const includeTalkTracksAsNotes = document.getElementById('includeTalkTracksAsNotes').checked;
+
+    // Build slide notes map if option is enabled
+    const slideNotes = {};
+    if (includeTalkTracksAsNotes) {
+      selectedSlides.forEach(id => {
+        const cb = document.getElementById(id);
+        if (cb) {
+          const talkTrack = cb.getAttribute('data-talktrack');
+          if (talkTrack) slideNotes[cb.value.toLowerCase()] = talkTrack;
+        }
+      });
+    }
+
     const payload = {
       email: document.getElementById('email').value,
       company: document.getElementById('company').value,
-      choices: choices
+      choices: choices,
+      includeTalkTracksAsNotes: includeTalkTracksAsNotes,
+      slideNotes: slideNotes
     };
 
     const GAS_URL = "https://script.google.com/macros/s/AKfycbypK2dxP6Hhsks-d7qMVhX9bUnGdTimP1vaeG4-SpFoIuODnarSeCezoyMF846bepGU/exec";
